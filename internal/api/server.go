@@ -52,8 +52,14 @@ func StartServer(config config.AppConfig) {
 
 	app.Use(cors)
 
+	app.Get("/", func(c *fiber.Ctx) error {
+		return rest.SuccessResponse(c, "Healthy", &fiber.Map{
+			"status": "ok",
+		})
+	})
+
 	auth := helper.SetupAuth(config.AppSecret)
-	paymentClient := payment.NewPaymentClient(config.StripeSecretKey, config.StripeSuccessUrl, config.StripeCancelUrl)
+	paymentClient := payment.NewPaymentClient(config.StripeSecretKey)
 
 	restHandler := &rest.RestHandler{
 		App:    app,
